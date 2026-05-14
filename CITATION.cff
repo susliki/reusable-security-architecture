@@ -10,6 +10,12 @@ authors:
     affiliation: "Vidzemes Augstskola, Inženierzinātņu fakultāte"
 license: Apache-2.0
 repository-code: "https://github.com/susliki/secure-gov-portal-template"
+version: v1.0.0
+doi: 10.5281/zenodo.20185634
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.20185634
+    description: "Concept DOI (visu versiju kopējais)"
 keywords:
   - security-architecture
   - nestjs

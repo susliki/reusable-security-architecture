@@ -1,5 +1,8 @@
 # Arhitektūras references modelis
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20185634.svg)](https://doi.org/10.5281/zenodo.20185634)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
 Drošas valsts sektora tīmekļa lietojumprogrammu arhitektūras references modelis — atvasināts no maģistra darba *Atkārtoti lietojama drošības arhitektūras modeļa izstrāde un validācija Latvijas valsts sektora tīmekļa lietojumprogrammām* (Edgars Naglis, Vidzemes Augstskola, 2026). Mērķis — piedāvāt atkārtoti lietojamu kodola arhitektūru, kas īsteno modernas drošības kontroles ar minimālu pielāgošanas darbu jaunās jomās.
 
 ## Tehnoloģiju kopa
@@ -107,6 +110,7 @@ Etalons `benchmarks/pii-encryption-bench.js` mēra šifrēšanas/atšifrēšanas
 
 ### BibTeX
 
+**Maģistra darbs** (primārā atsauce uz modeli):
 ```bibtex
 @mastersthesis{naglis2026,
   author       = {Edgars Naglis},
@@ -117,6 +121,20 @@ Etalons `benchmarks/pii-encryption-bench.js` mēra šifrēšanas/atšifrēšanas
   year         = {2026},
   address      = {Valmiera, Latvija},
   type         = {Ma\v{g}istra darbs}
+}
+```
+
+**Programmatūra** (atsauce uz konkrētu kodu versiju, arhivēta Zenodo):
+```bibtex
+@software{naglis2026_code,
+  author    = {Edgars Naglis},
+  title     = {Reusable Security Architecture Reference Model
+               for Latvian Public Sector Web Applications},
+  year      = {2026},
+  publisher = {Zenodo},
+  version   = {v1.0.0},
+  doi       = {10.5281/zenodo.20185634},
+  url       = {https://doi.org/10.5281/zenodo.20185634}
 }
 ```
 
