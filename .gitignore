@@ -44,3 +44,10 @@ tmp/
 
 # Ģenerēts deploy laikā
 version.json
+
+# SSH keys (never commit private keys)
+  id_*
+  *_id_ed25519
+  *_id_rsa
+  *.pem
+  EOF
