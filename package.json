@@ -1,0 +1,17 @@
+{
+  "name": "secure-gov-portal-template",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "clean": "turbo clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "turbo": "^2.9.6"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

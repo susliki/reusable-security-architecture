@@ -1,0 +1,237 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  OPERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  UNVERIFIED
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+  BLOCKED
+  DELETED
+}
+
+enum IdentityProvider {
+  PASSKEY
+  TOTP
+  ENTRA
+  EXTERNAL_EID
+}
+
+enum RectificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id                  String       @id @default(uuid())
+  email               String?      @unique
+  emailHmac           String?      @unique   // HMAC-SHA256 blind index meklēšanai
+  firstName           String?                // CONFIDENTIAL — AES-256-GCM šifrēts
+  lastName            String?                // CONFIDENTIAL — AES-256-GCM šifrēts
+  phone               String?                // CONFIDENTIAL — AES-256-GCM šifrēts
+  citizenship         String?                // CONFIDENTIAL — AES-256-GCM šifrēts
+  dateOfBirth         String?                // CONFIDENTIAL — AES-256-GCM šifrēts (ISO datums kā virkne)
+  sex                 String?      @db.Char(1)
+  birthPlace          String?                // CONFIDENTIAL — AES-256-GCM šifrēts
+  personalCodeEnc     String?                // CONFIDENTIAL — AES-256-GCM šifrēts (nacionālais personas kods)
+  address             String?                // CONFIDENTIAL — AES-256-GCM šifrēts
+  role                Role         @default(USER)
+  status              UserStatus   @default(UNVERIFIED)
+
+  // Paziņojumu preferences
+  emailNotify         Boolean      @default(true)
+  smsNotify           Boolean      @default(false)
+
+  // Identitātes verifikācija
+  identityVerifiedAt  DateTime?
+  identityVerifiedBy  String?
+  verificationMethod  String?
+  idCodeHmac          String?      @unique
+  profileSubmittedAt  DateTime?
+  rejectionReason     String?
+
+  // Entra apakšloma (iekšējiem lietotājiem)
+  entraRole           String?
+
+  // GDPR
+  consentedAt              DateTime?
+  consentedPolicyVersion   String?    @db.VarChar(20)
+  deletedAt                DateTime?
+  lastLoginAt              DateTime?  // GDPR Art. 5(1)(e) — neaktīvo kontu dzēšanai
+
+  // Metadati
+  createdBy           String?
+  updatedBy           String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  identities             Identity[]
+  sessions               Session[]
+  verificationDocs       VerificationDocument[]
+  consents               UserConsent[]
+  rectificationRequests  RectificationRequest[] @relation("rectificationRequests")
+  rectificationReviews   RectificationRequest[] @relation("rectificationReviews")
+  notifications          Notification[]
+  nameHistory            UserNameHistory[]
+}
+
+model Identity {
+  id          String            @id @default(uuid())
+  provider    IdentityProvider
+  providerId  String
+  user        User              @relation(fields: [userId], references: [id])
+  userId      String
+  secret      String?           // AES-256-GCM encrypted TOTP secret (TOTP rows only)
+
+  createdAt   DateTime          @default(now())
+
+  passkey     PasskeyCredential?
+
+  @@unique([provider, providerId])
+}
+
+model PasskeyCredential {
+  id              String    @id @default(uuid())
+  identity        Identity  @relation(fields: [identityId], references: [id])
+  identityId      String    @unique
+  credentialId    String    @unique
+  publicKey       String
+  counter         BigInt    @default(0)
+  transports      String[]
+  name            String?
+  uvInitialized   Boolean   @default(false)
+  lastUsedAt      DateTime?
+  createdAt       DateTime  @default(now())
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+}
+
+model VerificationDocument {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        String
+  storageKey  String
+  mimeType    String
+  fileSize    Int
+  scanStatus  String   @default("PENDING")
+  uploadedAt  DateTime @default(now())
+}
+
+model UserConsent {
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       String    @db.VarChar(50)
+  version    String    @db.VarChar(20)
+  accepted   Boolean   @default(true)
+  givenAt    DateTime  @default(now())
+  revokedAt  DateTime?
+  ipAddress  String?   @db.VarChar(45)
+  userAgent  String?   @db.VarChar(256)
+
+  @@index([userId, type, givenAt(sort: Desc)])
+  @@index([version])
+}
+
+model RectificationRequest {
+  id             String               @id @default(uuid())
+  userId         String
+  user           User                 @relation("rectificationRequests", fields: [userId], references: [id])
+  field          String               @db.VarChar(64)
+  currentValue   String               @db.VarChar(500)
+  requestedValue String               @db.VarChar(500)
+  reason         String?              @db.VarChar(500)
+  status         RectificationStatus  @default(PENDING)
+  reviewedBy     String?
+  reviewer       User?                @relation("rectificationReviews", fields: [reviewedBy], references: [id])
+  reviewNote     String?              @db.VarChar(500)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status, createdAt(sort: Desc)])
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        String   @db.VarChar(32)
+  title       String   @db.VarChar(200)
+  description String   @db.VarChar(500)
+  read        Boolean  @default(false)
+  actionUrl   String?  @db.VarChar(300)
+  actionLabel String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+
+  @@index([userId, read, createdAt(sort: Desc)])
+}
+
+model UserNameHistory {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  previousFirst String?              // Iepriekšējais vārds — AES-256-GCM šifrēts
+  previousLast  String?              // Iepriekšējais uzvārds — AES-256-GCM šifrēts
+  newFirst      String?              // Jaunais vārds — AES-256-GCM šifrēts
+  newLast       String?              // Jaunais uzvārds — AES-256-GCM šifrēts
+  changedAt     DateTime
+  documentRef   String?   @db.VarChar(200)
+  reason        String?   @db.VarChar(200)
+  createdBy     String?
+  createdAt     DateTime  @default(now())
+
+  @@index([userId, changedAt(sort: Desc)])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  ts          DateTime @default(now()) @db.Timestamptz(6)
+
+  seq         BigInt   @unique @default(autoincrement())
+
+  rid         String?  @db.VarChar(64)
+
+  subjectId   String?  @db.VarChar(128)
+  subjectRole String?  @db.VarChar(64)
+
+  action      String   @db.VarChar(64)
+  entityType  String?  @db.VarChar(64)
+  entityId    String?  @db.VarChar(64)
+
+  result      String   @db.VarChar(16)     // "Success" | "Denied" | "Error"
+
+  clientIp    String?  @db.VarChar(45)
+  userAgent   String?  @db.VarChar(256)
+
+  // tamper-evidence chain
+  prevHash    String?  @db.VarChar(88)     // base64 of 32 bytes (HMAC-SHA256)
+  hash        String   @db.VarChar(88)
+
+  // optional extra structured data (no secrets / no PII)
+  dataJson    Json?
+
+  @@index([ts(sort: Desc)])
+  @@index([action, ts(sort: Desc)])
+  @@index([entityType, entityId, ts(sort: Desc)])
+  @@index([subjectId, ts(sort: Desc)])
+}
