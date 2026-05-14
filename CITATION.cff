@@ -9,12 +9,12 @@ authors:
     email: enaglis@gmail.com
     affiliation: "Vidzemes Augstskola, Inženierzinātņu fakultāte"
 license: Apache-2.0
-repository-code: "https://github.com/susliki/secure-gov-portal-template"
+repository-code: "https://github.com/susliki/reusable-security-architecture"
 version: v1.0.0
-doi: 10.5281/zenodo.20185634
+doi: 10.5281/zenodo.20186229
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.20185634
+    value: 10.5281/zenodo.20186229
     description: "Concept DOI (visu versiju kopējais)"
 keywords:
   - security-architecture
@@ -29,7 +29,6 @@ keywords:
   - design-science-research
 preferred-citation:
   type: thesis
-  thesis-type: "Maģistra darbs"
   title: "Atkārtoti lietojama drošības arhitektūras modeļa izstrāde un validācija Latvijas valsts sektora tīmekļa lietojumprogrammām"
   authors:
     - family-names: Naglis
@@ -39,4 +38,5 @@ preferred-citation:
     city: Valmiera
     country: LV
   year: 2026
-  url: "https://github.com/susliki/secure-gov-portal-template"
+  month: 5
+  url: "https://github.com/susliki/reusable-security-architecture"
