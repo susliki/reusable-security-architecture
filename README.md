@@ -3,7 +3,21 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20186229.svg)](https://doi.org/10.5281/zenodo.20186229)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-Drošas valsts sektora tīmekļa lietojumprogrammu arhitektūras references modelis — atvasināts no maģistra darba *Atkārtoti lietojama drošības arhitektūras modeļa izstrāde un validācija Latvijas valsts sektora tīmekļa lietojumprogrammām* (Edgars Naglis, Vidzemes Augstskola, 2026). Mērķis — piedāvāt atkārtoti lietojamu kodola arhitektūru, kas īsteno modernas drošības kontroles ar minimālu pielāgošanas darbu jaunās jomās.
+Drošas valsts sektora tīmekļa lietojumprogrammu arhitektūras references modelis — atvasināts no maģistra darba *Atkārtoti lietojama drošības arhitektūras modeļa izstrāde un validācija Latvijas valsts sektora tīmekļa lietojumprogrammām* (Edgars Naglis, Vidzemes Augstskola, 2026).
+
+Mērķis — piedāvāt atkārtoti lietojamu kodola arhitektūru, kas īsteno modernas drošības kontroles ar minimālu pielāgošanas darbu jaunās jomās.
+
+## Validācijas rezultāti
+
+| Validācijas slānis | Rezultāts |
+|---|---|
+| OWASP ASVS v5.0 Level 2 atbilstība | **97,1 %** (99 no 102 prasībām) |
+| OWASP ZAP aktīvā skenēšana | 581 tests bez augsta riska atklājumiem |
+| Manuālie ielaušanās testi | 13 no 16 izturēti |
+| Vienībtesti (Jest) | **124 / 124 zaļi** (12 testu suites) |
+| Produkcijas audita ķēde | 167 418 ieraksti 25 dienās bez zudumiem |
+
+Pilna metodoloģija un rezultātu interpretācija — sk. maģistra darba 5.–7. nodaļu (citēšana zemāk).
 
 ## Tehnoloģiju kopa
 
@@ -38,7 +52,7 @@ infra/
   nginx/         — Apgrieztā starpniekservera paraugs
 scripts/
   deploy.sh      — Parametrizēts izvietošanas skripts
-  k6/            — Slodzes testi (audit write, encrypted CRUD, rate limit, sesijas, TOTP)
+  k6/            — Slodzes testi (audit write, encrypted CRUD, blind index, rate limit, sesijas, TOTP)
 benchmarks/      — PII šifrēšanas etalons
 ```
 
@@ -62,7 +76,7 @@ Pilns soli-pa-solim gids ar priekšnosacījumiem, drošo atslēgu ģenerēšanu,
 ## Adaptācija uz citu domēnu
 
 1. **Pievienot biznesa moduļus** — izveidot jaunu direktoriju `apps/api/src/<jomas-nosaukums>/` ar saviem kontrolieriem, servisiem un DTO.
-2. **Paplašināt Prisma shēmu** — pievienot jaunus modeļus blakus eksistējošajiem `User`, `Profile`, `AuditLog` u.c.
+2. **Paplašināt Prisma shēmu** — pievienot jaunus modeļus blakus eksistējošajiem `User`, `Identity`, `Session`, `AuditLog` u.c.
 3. **Pievienot vai aizvietot e-pasta veidnes** — `apps/api/src/notifications/templates/` ir veidņu mape; veidņu renderēšanas mehānisms paliek nemainīgs.
 4. **Pielāgot lomas** — `Role` enum `apps/api/prisma/schema.prisma` un loģisko lomu kartējums servisos.
 5. **Konfigurēt e-pasta piegādātāju** — `.env` izvēlēties SMTP vai Microsoft Graph (vai pievienot citu adapteri).
