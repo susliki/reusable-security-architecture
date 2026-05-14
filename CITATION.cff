@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "Ja izmantojat šo programmatūru, lūdzu atsaucieties uz oriģinālo maģistra darbu, kā norādīts zemāk."
+title: "Reusable Security Architecture Reference Model for Latvian Public Sector Web Applications"
+abstract: "Atkārtoti lietojams drošības arhitektūras references modelis Latvijas valsts sektora tīmekļa lietojumprogrammām. NestJS + Prisma + PostgreSQL + Redis + MinIO tehnoloģiju kopa ar OWASP ASVS v5.0 L2 atbilstību (97,1 %)."
+type: software
+authors:
+  - family-names: Naglis
+    given-names: Edgars
+    email: enaglis@gmail.com
+    affiliation: "Vidzemes Augstskola, Inženierzinātņu fakultāte"
+license: Apache-2.0
+repository-code: "https://github.com/susliki/secure-gov-portal-template"
+keywords:
+  - security-architecture
+  - nestjs
+  - prisma
+  - gdpr
+  - owasp-asvs
+  - latvia
+  - public-sector
+  - master-thesis
+  - reference-model
+  - design-science-research
+preferred-citation:
+  type: thesis
+  thesis-type: "Maģistra darbs"
+  title: "Atkārtoti lietojama drošības arhitektūras modeļa izstrāde un validācija Latvijas valsts sektora tīmekļa lietojumprogrammām"
+  authors:
+    - family-names: Naglis
+      given-names: Edgars
+  institution:
+    name: "Vidzemes Augstskola, Inženierzinātņu fakultāte"
+    city: Valmiera
+    country: LV
+  year: 2026
+  url: "https://github.com/susliki/secure-gov-portal-template"
